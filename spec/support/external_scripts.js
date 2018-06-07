@@ -7,10 +7,11 @@ jasmine.getEnv().addReporter({
 jasmine.getEnv().afterEach(function(){
   console.log("done with last test")
 });
-process.on("uncaughtException",function(e) {
-  console.log("Caught unhandled exception: " + e);
-  console.log(" ---> : " + e.stack);
-});
+
+//process.on("uncaughtException",function(e) {
+//  console.log("Caught unhandled exception: " + e);
+//  console.log(" ---> : " + e.stack);
+//});
 
 const errorMatchers = require("./error_matchers");
 
