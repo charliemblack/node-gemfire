@@ -35,6 +35,7 @@ v8::Local<v8::Object> Region::NewInstance(RegionPtr regionPtr) {
   Local<Value> argv[argc] = {};
   Local<Object> instance(Nan::New(Region::constructor())->NewInstance(argc, argv));
   Region *region = new Region(regionPtr);
+  RegionEventRegistry::getInstance()->add(region);
   region->Wrap(instance);
   return scope.Escape(instance);
 }
@@ -108,8 +109,15 @@ CachePtr getCacheFromRegion(RegionPtr regionPtr) {
   try {
     //TODO: need to fix this since it gets any instance and doesn't use the region.
     CachePtr cachePtr = CacheFactory::getAnyInstance();
-    if(cachePtr->isClosed()){
-      Nan::ThrowError(Nan::New("Cache is closed.").ToLocalChecked());
+    if(cachePtr == NULLPTR || cachePtr->isClosed()){
+      if(regionPtr != NULLPTR){
+        std::string msg("Region name ");
+        msg += regionPtr->getName();
+        msg += " is invalid because the Cache is Closed.";
+        Nan::ThrowError(Nan::New(msg).ToLocalChecked());
+      } else {
+        Nan::ThrowError(Nan::New("Cache is closed.").ToLocalChecked());
+      }
       return NULLPTR;
     }
     return CacheFactory::getAnyInstance();

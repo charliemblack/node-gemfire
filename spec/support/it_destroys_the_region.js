@@ -113,11 +113,14 @@ module.exports = function itDestroysTheRegion(methodName) {
 
   it("prevents subsequent operations on other pre-existing region objects", function(done) {
     region[methodName](function (error) {
-      console.log("error = " + error);
+      console.log("error +++++++++ = " + error);
       expect(error).not.toBeError();
+      console.log("error ========= = " + error);
       expect(function(){
+        console.log("foo *************************");
         otherCopyOfRegion.put("foo", "bar");
-      }).toThrowError(
+        console.log("bar *************************");
+      }).toBeError(
         "apache::geode::client::RegionDestroyedException",
         "Region::put: Named Region Destroyed"
       );

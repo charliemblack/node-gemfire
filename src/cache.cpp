@@ -86,9 +86,9 @@ NAN_METHOD(Cache::Close) {
   Nan::HandleScope scope;
 
   Cache * cache = Nan::ObjectWrap::Unwrap<Cache>(info.This());
-  cache->close();
-
-  return;
+  if(cache != NULL){
+    cache->close();
+  }
 }
 
 void Cache::close() {

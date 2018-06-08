@@ -10,13 +10,13 @@ try {
   region.put("foo", "bar");
   throw new Error("region.put() did not throw an error after cache.close().");
 } catch (error) {
-  expectErrorMessage(error, "region /exampleRegion destroyed");
+  expectErrorMessage(error, "Region name exampleRegion is invalid because the Cache is Closed.");
 }
 
 var clearEmittedError = false;
 
 region.on("error", function(error) {
-  expectErrorMessage(error, "region /exampleRegion destroyed");
+  expectErrorMessage(error, "LocalRegion::getRegionService: region /exampleRegion destroyed");
   clearEmittedError = true;
 });
 

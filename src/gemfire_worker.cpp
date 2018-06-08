@@ -14,7 +14,8 @@ void GemfireWorker::Execute() {
   try {
     ExecuteGemfireWork();
   } catch(apache::geode::client::Exception & exception) {
-    printf("caught exception : %s %s\n", exception.getName(), exception.getMessage());
+    printf("GemFire worker name = %s\n\tmessage = %s\n", exception.getName(), exception.getMessage());
+    exception.printStackTrace();
     SetError(exception.getName(), exception.getMessage());
   }
 }
