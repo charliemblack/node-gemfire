@@ -33,15 +33,15 @@ describe("gemfire.Cache", function() {
 
     it("accepts a correct XML file path", function(done) {
       expectExternalSuccess("correct_xml_file", done);
-    
     });
 
     it("throws an error if the XML file is not found", function(done) {
+      var expectedMessage = "failed to load external entity";
       expectExternalFailure("missing_xml_file", done, expectedMessage);
     });
 
     it("throws an error if setReadSerialized not set to true in the XML", function(done) {
-      var expectedMessage = "pdx read-serialized";
+      var expectedMessage = "must be set in your cache xml";
       expectExternalFailure("not_pdx_read_serialized", done, expectedMessage);
     });
 

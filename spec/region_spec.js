@@ -1053,7 +1053,7 @@ describe("gemfire.Region", function() {
       expect(queryWithNonCallback).toThrow(new Error("You must pass a function as the callback to query()."));
     });
 
-    it("passes along errors from an invalid query", function(done) {
+    it("passes along errors from an invalid query 1", function(done) {
       region.query("Invalid query", function(error, response) {
         expect(error).toBeError("apache::geode::client::QueryException", /Syntax error in query/);
         done();
@@ -1124,8 +1124,9 @@ describe("gemfire.Region", function() {
       expect(queryWithNonCallback).toThrow(new Error("You must pass a function as the callback to selectValue()."));
     });
 
-    it("passes along errors from an invalid query", function(done) {
+    it("passes along errors from an invalid query 2", function(done) {
       region.selectValue("Invalid query", function(error, response) {
+        console.log("this is the the error" + error);
         expect(error).toBeError("apache::geode::client::QueryException", /Syntax error in query/);
         done();
       });
@@ -1183,7 +1184,7 @@ describe("gemfire.Region", function() {
       expect(queryWithNonCallback).toThrow(new Error("You must pass a function as the callback to existsValue()."));
     });
 
-    it("passes along errors from an invalid query", function(done) {
+    it("passes along errors from an invalid query 3", function(done) {
       region.existsValue("Invalid query", function(error, response) {
         expect(error).toBeError('apache::geode::client::QueryException', /Syntax error in query/);
         done();

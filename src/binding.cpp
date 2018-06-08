@@ -20,7 +20,6 @@ NAN_METHOD(Connected) {
 }
 
 NAN_METHOD(Initialize) {
-  printf("in node gemfire gemfire init\n");
   Nan::HandleScope scope;
 
   Local<Object> gemfire = Nan::New<Object>();
@@ -37,7 +36,6 @@ NAN_METHOD(Initialize) {
       Nan::New<FunctionTemplate>(Connected)->GetFunction(),
       static_cast<PropertyAttribute>(ReadOnly | DontDelete));
 
-  printf("hellow\n");
   node_gemfire::Cache::Init(gemfire);
   node_gemfire::Region::Init(gemfire);
   node_gemfire::SelectResults::Init(gemfire);

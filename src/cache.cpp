@@ -23,7 +23,6 @@ namespace node_gemfire {
 static CachePtr closeThisCache = NULLPTR;
 
 static void closeCacheAtExit(void * arg){
-  printf("closeing the cache\n");
    if(closeThisCache != NULLPTR && !closeThisCache->isClosed()){
      closeThisCache->close();
    }
@@ -31,17 +30,12 @@ static void closeCacheAtExit(void * arg){
 NAN_MODULE_INIT(Cache::Init) {
   Nan::HandleScope scope;
 
-  printf("a\n");
   v8::Local<v8::FunctionTemplate> constructorTemplate = Nan::New<v8::FunctionTemplate>(New);
-  printf("b\n");  
   constructorTemplate->SetClassName(Nan::New("Cache").ToLocalChecked());
-  printf("c\n");
   
   constructorTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-  printf("d\n");
 
   Nan::SetPrototypeMethod(constructorTemplate, "close", Cache::Close);
-  printf("e\n");
   Nan::SetPrototypeMethod(constructorTemplate, "executeFunction", Cache::ExecuteFunction);
   Nan::SetPrototypeMethod(constructorTemplate, "executeQuery", Cache::ExecuteQuery);
   Nan::SetPrototypeMethod(constructorTemplate, "createRegion", Cache::CreateRegion);
@@ -61,7 +55,6 @@ NAN_METHOD(Cache::New) {
     Nan::ThrowError("Cache constructor requires a path to an XML configuration file as its first argument.");
     return;
   }
-
   CacheFactoryPtr cacheFactory(CacheFactory::createCacheFactory());
   cacheFactory->set("cache-xml-file", *Nan::Utf8String(info[0]));
   cacheFactory->setSubscriptionEnabled(true);
@@ -70,8 +63,7 @@ NAN_METHOD(Cache::New) {
   try {
     cachePtr = cacheFactory->create();
   } catch(const apache::geode::client::Exception & exception) {
-    ThrowGemfireException(exception);
-    return;
+    info.GetReturnValue().Set( v8Error(exception));
   }
 
   if (!cachePtr->getPdxReadSerialized()) {
@@ -287,11 +279,13 @@ NAN_METHOD(Cache::GetRegion) {
 
   if (info.Length() != 1) {
     Nan::ThrowError("You must pass the name of a GemFire region to getRegion.");
+    info.GetReturnValue().Set(Nan::Undefined());
     return;
   }
 
   if (!info[0]->IsString()) {
     Nan::ThrowError("You must pass a string as the name of a GemFire region to getRegion.");
+    info.GetReturnValue().Set(Nan::Undefined());
     return;
   }
 
@@ -299,7 +293,11 @@ NAN_METHOD(Cache::GetRegion) {
   CachePtr cachePtr(cache->cachePtr);
   RegionPtr regionPtr(cachePtr->getRegion(*Nan::Utf8String(info[0])));
 
-  info.GetReturnValue().Set(Region::NewInstance(regionPtr));
+  if(regionPtr == NULLPTR){
+      info.GetReturnValue().Set(Nan::Undefined());
+  }else{
+     info.GetReturnValue().Set(Region::NewInstance(regionPtr));
+  }
 }
 
 NAN_METHOD(Cache::RootRegions) {

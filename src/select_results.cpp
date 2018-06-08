@@ -57,6 +57,7 @@ NAN_METHOD(SelectResults::Each) {
   if (info.Length() == 0 || !info[0]->IsFunction()) {
     Nan::ThrowError("You must pass a callback to each()");
     info.GetReturnValue().Set(Nan::Undefined());
+    return;
   }
 
   SelectResults * selectResults = Nan::ObjectWrap::Unwrap<SelectResults>(info.Holder());

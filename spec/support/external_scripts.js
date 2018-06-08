@@ -1,13 +1,13 @@
 const childProcess = require('child_process');
-jasmine.getEnv().addReporter({
-  specStarted: function(result) {
-      console.log(result.fullName);
-  }
-});
-jasmine.getEnv().afterEach(function(){
-  console.log("done with last test")
-});
 
+//jasmine.getEnv().addReporter({
+//  specStarted: function(result) {
+//      console.log(result.fullName);
+//  }
+//});
+//jasmine.getEnv().afterEach(function(){
+//  console.log("done with last test")
+//});
 //process.on("uncaughtException",function(e) {
 //  console.log("Caught unhandled exception: " + e);
 //  console.log(" ---> : " + e.stack);
@@ -29,7 +29,7 @@ exports.expectExternalSuccess = function expectExternalSuccess(name, callback){
   runExternalTest(name, function(error, stdout, stderr) {
     expect(error).not.toBeError();
     expect(stderr).toEqual('');
-    callback(error, stdout);
+    callback();
   });
 };
 
@@ -39,6 +39,6 @@ exports.expectExternalFailure = function expectExternalFailure(name, callback, m
   runExternalTest(name, function(error, stdout, stderr) {
     expect(error).not.toBeNull();
     expect(stderr.indexOf(message) >= 0).toBe(true);
-    callback(error, stdout, stderr);
+    callback();
   });
 };

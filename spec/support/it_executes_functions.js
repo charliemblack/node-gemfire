@@ -9,7 +9,6 @@ module.exports = function itExecutesFunctions(subjectSource, expectFunctionsToTh
   describe("shared behaviors for function execution", function() {
     it("runs a function on the GemFire cluster and emits results via the 'data' event", function(done) {
       const dataCallback = jasmine.createSpy("dataCallback");
-
       subject
         .executeFunction(testFunctionName)
         .on("data", dataCallback)

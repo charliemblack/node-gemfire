@@ -19,28 +19,22 @@ module.exports = function itDestroysTheRegion(methodName) {
 
     region = cache.createRegion(regionName, {type: "LOCAL"});
     otherCopyOfRegion = cache.getRegion(regionName);
-    process.on("uncaughtException",function(e) {
-      console.trace("Here I am!")
-      console.log("Caught unhandled exception: " + e);
-      console.log(" ---> : " + e.stack);
-    });
     }catch(ex){
       console.log(ex)
     }
   });
 
   it("destroys the region", function(done) {
-    console.log("destroys the region")
     region[methodName](function (error) {
       expect(error).not.toBeError();
+      console.log("deleted region " + regionName);
+      console.log("getting region " + cache.getRegion(regionName));
       expect(cache.getRegion(regionName)).not.toBeDefined();
       done();
     });
-    console.log("destroys the region")
   });
 
   it("throws an error if the callback is not a function", function() {
-    console.log("")
     function callWithNonFunction() {
       region[methodName]("this is not a function");
     }
@@ -48,8 +42,6 @@ module.exports = function itDestroysTheRegion(methodName) {
     expect(callWithNonFunction).toThrow(
       new Error("You must pass a function as the callback to " + methodName + "().")
     );
-    console.log("throws an error if the callback is not a function")
-    
   });
 
   it("emits an event when an error occurs and there is no callback", function(done) {
@@ -69,7 +61,6 @@ module.exports = function itDestroysTheRegion(methodName) {
       expect(errorHandler).toHaveBeenCalled();
       done();
     }, 1000);
-    console.log("Running test - emits an event when an error occurs and there is no callback")
     }catch(ex){
       console.log(ex);
     }
@@ -99,7 +90,7 @@ module.exports = function itDestroysTheRegion(methodName) {
         expect(function(){ 
           try{
             console.log("a ********");
-          //region.put("foo", "bar"); 
+          region.put("foo", "bar"); 
           console.log("b *****");
           }catch(ex){
             console.log(ex);
@@ -135,7 +126,6 @@ module.exports = function itDestroysTheRegion(methodName) {
   });
 
   it("passes GemFire exceptions into the callback", function(done) {
-    console.log("Running test - passes GemFire exceptions into the callback" )
     async.series([
       function(next) {
       region[methodName](function(error) {
@@ -156,6 +146,5 @@ module.exports = function itDestroysTheRegion(methodName) {
     }
 
     ], done);
-    console.log("Running test - passes GemFire exceptions into the callback" )
   });
 };

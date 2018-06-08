@@ -107,6 +107,11 @@ CachePtr getCacheFromRegion(RegionPtr regionPtr) {
   Nan::HandleScope scope;
   try {
     //TODO: need to fix this since it gets any instance and doesn't use the region.
+    CachePtr cachePtr = CacheFactory::getAnyInstance();
+    if(cachePtr->isClosed()){
+      Nan::ThrowError(Nan::New("Cache is closed.").ToLocalChecked());
+      return NULLPTR;
+    }
     return CacheFactory::getAnyInstance();
   } catch (const RegionDestroyedException & exception) {
     ThrowGemfireException(exception);
@@ -378,6 +383,7 @@ NAN_METHOD(Region::GetAllSync) {
 
   if (info.Length() != 1 || !info[0]->IsArray()) {
     Nan::ThrowError("You must pass an array of keys to getAllSync().");
+    info.GetReturnValue().Set(Nan::Undefined());
     return;
   }
 
@@ -386,6 +392,7 @@ NAN_METHOD(Region::GetAllSync) {
 
   CachePtr cachePtr(getCacheFromRegion(region->regionPtr));
   if (cachePtr == NULLPTR) {
+    info.GetReturnValue().Set(Nan::Undefined());
     return;
   }
 
@@ -393,16 +400,17 @@ NAN_METHOD(Region::GetAllSync) {
 
   if (gemfireKeysPtr == NULLPTR) {
     Nan::ThrowError("Invalid GemFire key.");
+    info.GetReturnValue().Set(Nan::Undefined());
     return;
   }
 
   HashMapOfCacheablePtr resultsPtr(new HashMapOfCacheable());
   if (gemfireKeysPtr->size() == 0) {
     info.GetReturnValue().Set(v8Object(resultsPtr));
+  }else{
+    regionPtr->getAll(*gemfireKeysPtr, resultsPtr, NULLPTR);
+    info.GetReturnValue().Set(v8Value(resultsPtr));
   }
-
-  regionPtr->getAll(*gemfireKeysPtr, resultsPtr, NULLPTR);
-  info.GetReturnValue().Set(v8Value(resultsPtr));
 }
 
 class PutAllWorker : public GemfireEventedWorker {

@@ -11,18 +11,16 @@ class GemfireWorker : public Nan::AsyncWorker {
  public:
     explicit GemfireWorker(Nan::Callback * callback) :
       Nan::AsyncWorker(callback),
-      errorName(),
-      threwException(false) {}
+      errorName() {}
 
     void Execute();
     virtual void ExecuteGemfireWork() = 0;
-    void WorkComplete();
+    void HandleErrorCallback();
     void SetError(const char * name, const char * message);
   
   protected: 
     v8::Local<v8::Value> errorObject();
     std::string errorName;
-    bool threwException;
 };
 
 }  // namespace node_gemfire

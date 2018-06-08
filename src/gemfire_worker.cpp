@@ -14,25 +14,16 @@ void GemfireWorker::Execute() {
   try {
     ExecuteGemfireWork();
   } catch(apache::geode::client::Exception & exception) {
+    printf("caught exception : %s %s\n", exception.getName(), exception.getMessage());
     SetError(exception.getName(), exception.getMessage());
-    threwException = true;
   }
 }
-
- void GemfireWorker::WorkComplete() {
-    Nan::HandleScope scope;
-    if(threwException){
-        Nan::ThrowError(errorObject());
-    } else if (ErrorMessage() == NULL){
-      HandleOKCallback();
-    } else {
-      HandleErrorCallback();
-    }
-    delete callback;
-    callback = NULL;
-    threwException = false;
-  }
-  void GemfireWorker::SetError( const char * name, const char * message){
+ void GemfireWorker::HandleErrorCallback() {
+    static const int argc = 1;
+    Local<Value> argv[argc] = { errorObject() };
+    callback->Call(argc, argv);
+ }
+ void GemfireWorker::SetError( const char * name, const char * message){
     errorName = name;
     SetErrorMessage(message);
   }
