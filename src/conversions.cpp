@@ -64,7 +64,6 @@ std::string getClassName(const Local<Object> & v8Object) {
   for (std::set<std::string>::iterator i(fieldNames.begin()); i != fieldNames.end(); ++i) {
     className += *i;
   }
-
   return className;
 }
 
@@ -116,7 +115,14 @@ void ConsoleWarn(const char * message) {
 
 CacheablePtr gemfireValue(const Local<Value> & v8Value, const CachePtr & cachePtr) {
   if (v8Value->IsString() || v8Value->IsStringObject()) {
-    return CacheableString::create(wstringFromV8String(v8Value->ToString()).c_str());
+    Local<String> stringValue = v8Value->ToString();
+    if(stringValue->IsOneByte()){
+      Nan::Utf8String value(stringValue);
+      return CacheableString::create( *value);
+    }else{
+      String::Value value(stringValue);
+      return CacheableString::create((wchar_t*)*value);
+    }
   } else if (v8Value->IsBoolean()) {
     return CacheableBoolean::create(v8Value->ToBoolean()->Value());
   } else if (v8Value->IsNumber() || v8Value->IsNumberObject()) {
@@ -150,24 +156,18 @@ CacheablePtr gemfireValue(const Local<Value> & v8Value, const CachePtr & cachePt
 
 PdxInstancePtr gemfireValue(const Local<Object> & v8Object, const CachePtr & cachePtr) {
     Nan::EscapableHandleScope scope;
-
   try {
     std::string pdxClassName = getClassName(v8Object);
     PdxInstanceFactoryPtr pdxInstanceFactory = cachePtr->createPdxInstanceFactory(pdxClassName.c_str());
-
     Local<Array> v8Keys(v8Object->GetOwnPropertyNames());
     unsigned int length = v8Keys->Length();
-
     for (unsigned int i = 0; i < length; i++) {
       Local<Value> v8Key(v8Keys->Get(i));
       Local<Value> v8Value(v8Object->Get(v8Key));
-
       Nan::Utf8String fieldName(v8Key);
-
       CacheablePtr cacheablePtr(gemfireValue(v8Value, cachePtr));
       pdxInstanceFactory->writeObject(*fieldName, cacheablePtr);
     }
-
     return pdxInstanceFactory->create();
   }
   catch(const apache::geode::client::Exception & exception) {
@@ -276,7 +276,7 @@ Local<Value> v8Value(const CacheablePtr & valuePtr) {
       return scope.Escape(Nan::New((static_cast<CacheableStringPtr>(valuePtr))->asChar()).ToLocalChecked());
     case GeodeTypeIds::CacheableString:
     case GeodeTypeIds::CacheableStringHuge:
-      return scope.Escape(v8StringFromWstring((static_cast<CacheableStringPtr>(valuePtr))->asWChar()));
+      return scope.Escape(Nan::New( (uint16_t *) ((static_cast<CacheableStringPtr>(valuePtr))->asWChar())).ToLocalChecked());
     case GeodeTypeIds::CacheableBoolean:
       return scope.Escape(Nan::New((static_cast<CacheableBooleanPtr>(valuePtr))->value()));
     case GeodeTypeIds::CacheableDouble:

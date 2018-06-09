@@ -189,34 +189,41 @@ NAN_METHOD(Region::Put) {
 NAN_METHOD(Region::PutSync) {
   Nan::HandleScope scope;
 
-  unsigned int argsLength = info.Length();
+  try{
+    unsigned int argsLength = info.Length();
 
-  if (argsLength != 2) {
-    Nan::ThrowError("You must pass a key and value to putSync().");
-    return;
+    if (argsLength != 2) {
+      Nan::ThrowError("You must pass a key and value to putSync().");
+      return;
+    }
+
+    Region * region = Nan::ObjectWrap::Unwrap<Region>(info.Holder());
+
+    CachePtr cachePtr(getCacheFromRegion(region->regionPtr));
+    if (cachePtr == NULLPTR) {
+      return;
+    }
+
+    CacheableKeyPtr keyPtr(gemfireKey(info[0], cachePtr));
+    CacheablePtr valuePtr(gemfireValue(info[1], cachePtr));
+
+    if (keyPtr == NULLPTR) {
+      Nan::ThrowError("Invalid GemFire key.");
+      return;
+    }
+
+    if (valuePtr == NULLPTR) {
+      Nan::ThrowError("Invalid GemFire value.");
+      return;
+    }
+    region->regionPtr->put(keyPtr, valuePtr);
+    info.GetReturnValue().Set(info.Holder());
+  } catch(apache::geode::client::Exception & exception) {
+    std::string msg(exception.getName());
+    msg.append(" ").append(exception.getMessage());
+    Nan::ThrowError(msg.c_str());
+    info.GetReturnValue().Set(Nan::Undefined());
   }
-
-  Region * region = Nan::ObjectWrap::Unwrap<Region>(info.Holder());
-
-  CachePtr cachePtr(getCacheFromRegion(region->regionPtr));
-  if (cachePtr == NULLPTR) {
-    return;
-  }
-
-  CacheableKeyPtr keyPtr(gemfireKey(info[0], cachePtr));
-  CacheablePtr valuePtr(gemfireValue(info[1], cachePtr));
-
-  if (keyPtr == NULLPTR) {
-    Nan::ThrowError("Invalid GemFire key.");
-    return;
-  }
-
-  if (valuePtr == NULLPTR) {
-    Nan::ThrowError("Invalid GemFire value.");
-    return;
-  }
-  region->regionPtr->put(keyPtr, valuePtr);
-  info.GetReturnValue().Set(info.Holder());
 }
 
 class GetWorker : public GemfireWorker {
@@ -486,15 +493,18 @@ NAN_METHOD(Region::PutAllSync) {
   if (cachePtr == NULLPTR) {
     return;
   }
-
-  HashMapOfCacheablePtr hashMapPtr(gemfireHashMap(info[0]->ToObject(), cachePtr));
-  if (hashMapPtr == NULLPTR) {
-    Nan::ThrowError("Invalid GemFire value.");
-    return;
+  try{
+    HashMapOfCacheablePtr hashMapPtr(gemfireHashMap(info[0]->ToObject(), cachePtr));
+    if (hashMapPtr == NULLPTR) {
+      Nan::ThrowError("Invalid GemFire value.");
+      return;
+    }
+    regionPtr->putAll(*hashMapPtr);
+    info.GetReturnValue().Set(info.Holder());
+  }catch (const apache::geode::client::Exception & exception) {
+    ThrowGemfireException(exception);
+    info.GetReturnValue().Set(Nan::Undefined());
   }
-  regionPtr->putAll(*hashMapPtr);
-
-  info.GetReturnValue().Set(info.Holder());
 }
 
 class RemoveWorker : public GemfireEventedWorker {
@@ -765,6 +775,7 @@ NAN_METHOD(Region::Query) {
   Region * region = Nan::ObjectWrap::Unwrap<Region>(info.Holder());
 
   std::string queryPredicate(*Nan::Utf8String(info[0]));
+  //printf("queryPredicate %s\n", queryPredicate.c_str());
   Nan::Callback * callback = new Nan::Callback(info[1].As<Function>());
 
   T * worker = new T(region->regionPtr, queryPredicate, callback);

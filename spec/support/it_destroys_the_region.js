@@ -81,48 +81,24 @@ module.exports = function itDestroysTheRegion(methodName) {
   });
 
   it("prevents subsequent operations on the region object that received the call", function(done) {
-    console.log("Running test - prevents subsequent operations on the region object that received the call" )
-    try {
-      console.log("method name = " + methodName);
-      region[methodName](function (error) {
-        try{
-        expect(error).not.toBeError();
-        expect(function(){ 
-          try{
-            console.log("a ********");
-          region.put("foo", "bar"); 
-          console.log("b *****");
-          }catch(ex){
-            console.log(ex);
-          }
-        }).toThrow(
-          "apache::geode::client::RegionDestroyedException",
-          "LocalRegion::getCache: region /" + regionName + " destroyed"
-        );
-        done();
-      }catch(ex){
-        console.log(ex)
-      }
-        
-      });
-    } catch (ex) {
-      console.log(ex);
-    }
-    console.log("Running test - prevents subsequent operations on the region object that received the call" )
+    region[methodName](function (error) {
+      expect(error).not.toBeError();
+      expect(function(){ 
+        region.putSync("foo", "bar"); 
+      }).toThrow(
+          new Error("apache::geode::client::RegionDestroyedException Region::put: Named Region Destroyed")
+      );
+      done();
+    });
   });
 
   it("prevents subsequent operations on other pre-existing region objects", function(done) {
     region[methodName](function (error) {
-      console.log("error +++++++++ = " + error);
       expect(error).not.toBeError();
-      console.log("error ========= = " + error);
       expect(function(){
-        console.log("foo *************************");
-        otherCopyOfRegion.put("foo", "bar");
-        console.log("bar *************************");
-      }).toBeError(
-        "apache::geode::client::RegionDestroyedException",
-        "Region::put: Named Region Destroyed"
+        otherCopyOfRegion.putSync("foo", "bar");
+      }).toThrow(
+        new Error("apache::geode::client::RegionDestroyedException Region::put: Named Region Destroyed")
       );
       done();
     });

@@ -29,16 +29,15 @@ exports.expectExternalSuccess = function expectExternalSuccess(name, callback){
   runExternalTest(name, function(error, stdout, stderr) {
     expect(error).not.toBeError();
     expect(stderr).toEqual('');
-    callback();
+    callback(error, stdout, stderr);
   });
 };
 
 exports.expectExternalFailure = function expectExternalFailure(name, callback, message){
   jasmine.addMatchers(errorMatchers);
-
   runExternalTest(name, function(error, stdout, stderr) {
     expect(error).not.toBeNull();
     expect(stderr.indexOf(message) >= 0).toBe(true);
-    callback();
+    callback(error, stdout, stderr);
   });
 };
