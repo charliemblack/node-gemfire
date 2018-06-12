@@ -1075,7 +1075,6 @@ describe("gemfire.Region", function() {
           region.selectValue("foo = 2", function(error, result) {
             expect(error).not.toBeError();
             expect(result).toEqual({ foo: 2 });
-
             callback();
           });
         },
@@ -1085,16 +1084,18 @@ describe("gemfire.Region", function() {
     it("passes an error to the callback when there is more than one result", function(done) {
       async.series([
         function (next) {
-          region.putAll({
+          region.putAllSync({
             key1: { foo: 'bar', baz: 'qux' },
             key2: { foo: 'bar' }
-          }, next);
+          });
+          next();
         },
         function (next) {
-          region.selectValue("foo = 'bar'", function(error, response) {
-            expect(error).toBeError(new Error("apache::geode::client::QueryException selectValue has more than one result"));
+          region.selectValue("foo = 'bar'", function(error, result) {
+            expect(error).toBeError("apache::geode::client::QueryException", "selectValue has more than one result");
+            next();
           });
-          next()
+         
         }
       ], done);
     });
@@ -1321,7 +1322,7 @@ describe("gemfire.Region", function() {
       async.series([
         function(next) {
           region.putSync('key1', 'foo');
-          region.putAllSync({ key1: 'foo', key2: 'bar', "1": "one", key4: {foo: "hi", bar: "there"}});
+          region.putAllSync({ key1: 'foo', key2: 'bar', "1": "one"});
           next();
         },
         function(next) {

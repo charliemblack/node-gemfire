@@ -63,7 +63,8 @@ NAN_METHOD(Cache::New) {
   try {
     cachePtr = cacheFactory->create();
   } catch(const apache::geode::client::Exception & exception) {
-    info.GetReturnValue().Set( v8Error(exception));
+    ThrowGemfireException(exception);
+    return;
   }
 
   if (!cachePtr->getPdxReadSerialized()) {

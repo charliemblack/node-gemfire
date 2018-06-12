@@ -27,8 +27,6 @@ module.exports = function itDestroysTheRegion(methodName) {
   it("destroys the region", function(done) {
     region[methodName](function (error) {
       expect(error).not.toBeError();
-      console.log("deleted region " + regionName);
-      console.log("getting region " + cache.getRegion(regionName));
       expect(cache.getRegion(regionName)).not.toBeDefined();
       done();
     });
@@ -68,8 +66,6 @@ module.exports = function itDestroysTheRegion(methodName) {
 
   // if an error event is emitted, the test suite will crash here
   it("does not emit an event when no error occurs and there is no callback", function(done) {
-    console.log("Running test - does not emit an event when no error occurs and there is no callback" )
-    
     until(
       function(test) { test(cache.getRegion(regionName)); },
       function(destroyedRegion) { return !destroyedRegion; },
@@ -77,7 +73,6 @@ module.exports = function itDestroysTheRegion(methodName) {
     );
 
     region[methodName]();
-    console.log("Running test - does not emit an event when no error occurs and there is no callback" )
   });
 
   it("prevents subsequent operations on the region object that received the call", function(done) {

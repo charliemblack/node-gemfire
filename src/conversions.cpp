@@ -90,7 +90,7 @@ Local<String> v8StringFromWstring(const std::wstring & wideString) {
   Nan::EscapableHandleScope scope;
 
   unsigned int length = wideString.length();
-  char * buffer = new char[length + 1];
+  uint16_t * buffer = new uint16_t[length + 1];
   for (unsigned int i = 0; i < length; i++) {
     buffer[i] = wideString[i];
   }
@@ -115,14 +115,9 @@ void ConsoleWarn(const char * message) {
 
 CacheablePtr gemfireValue(const Local<Value> & v8Value, const CachePtr & cachePtr) {
   if (v8Value->IsString() || v8Value->IsStringObject()) {
-    Local<String> stringValue = v8Value->ToString();
-    if(stringValue->IsOneByte()){
-      Nan::Utf8String value(stringValue);
-      return CacheableString::create( *value);
-    }else{
-      String::Value value(stringValue);
-      return CacheableString::create((wchar_t*)*value);
-    }
+    std::wstring wideString = wstringFromV8String(v8Value->ToString());
+    const wchar_t* readOnlyWideChar = wideString.c_str();
+    return CacheableString::create(readOnlyWideChar);
   } else if (v8Value->IsBoolean()) {
     return CacheableBoolean::create(v8Value->ToBoolean()->Value());
   } else if (v8Value->IsNumber() || v8Value->IsNumberObject()) {
@@ -179,12 +174,10 @@ PdxInstancePtr gemfireValue(const Local<Object> & v8Object, const CachePtr & cac
 apache::geode::client::CacheableArrayListPtr gemfireValue(const Local<Array> & v8Array,
                                          const apache::geode::client::CachePtr & cachePtr) {
   CacheableArrayListPtr arrayListPtr(CacheableArrayList::create());
-
   unsigned int length = v8Array->Length();
   for (unsigned int i = 0; i < length; i++) {
     arrayListPtr->push_back(gemfireValue(v8Array->Get(i), cachePtr));
   }
-
   return arrayListPtr;
 }
 
@@ -273,10 +266,16 @@ Local<Value> v8Value(const CacheablePtr & valuePtr) {
   switch (typeId) {
     case GeodeTypeIds::CacheableASCIIString:
     case GeodeTypeIds::CacheableASCIIStringHuge:
-      return scope.Escape(Nan::New((static_cast<CacheableStringPtr>(valuePtr))->asChar()).ToLocalChecked());
     case GeodeTypeIds::CacheableString:
     case GeodeTypeIds::CacheableStringHuge:
-      return scope.Escape(Nan::New( (uint16_t *) ((static_cast<CacheableStringPtr>(valuePtr))->asWChar())).ToLocalChecked());
+    {  
+      CacheableStringPtr cacheableStringPtr = static_cast<CacheableStringPtr>(valuePtr);
+      if(cacheableStringPtr->isWideString()){
+        return scope.Escape(v8StringFromWstring(cacheableStringPtr->asWChar()));
+      }
+      //else
+      return scope.Escape(Nan::New(cacheableStringPtr->asChar()).ToLocalChecked());
+    }
     case GeodeTypeIds::CacheableBoolean:
       return scope.Escape(Nan::New((static_cast<CacheableBooleanPtr>(valuePtr))->value()));
     case GeodeTypeIds::CacheableDouble:
@@ -321,7 +320,6 @@ Local<Value> v8Value(const CacheablePtr & valuePtr) {
     // We are assuming these are Pdx
     return scope.Escape(v8Value(static_cast<PdxInstancePtr>(valuePtr)));
   }
-
   std::stringstream errorMessageStream;
   errorMessageStream << "Unable to serialize value from GemFire; unknown typeId: " << typeId;
   Nan::ThrowError(errorMessageStream.str().c_str());
@@ -338,14 +336,12 @@ Local<Value> v8Value(const PdxInstancePtr & pdxInstance) {
       return scope.Escape(Nan::New<Object>());
     }
 
-    Local<Object> v8Object(Nan::New<Object>());
+    Local<Object> v8Object = Nan::New<Object>();
     int length = gemfireKeys->length();
 
     for (int i = 0; i < length; i++) {
       const char * key = gemfireKeys[i]->asChar();
-
       CacheablePtr value;
-
       if (pdxInstance->getFieldType(key) == apache::geode::client::PdxFieldTypes::OBJECT_ARRAY) {
         CacheableObjectArrayPtr valueArray;
         pdxInstance->getField(key, valueArray);
