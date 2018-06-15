@@ -598,7 +598,7 @@ describe("gemfire.Cache", function() {
       cache.executeFunction(functionName)
         .on("error", function(error) {
           expect(error).toBeError(
-            /cannot be cast to com.gemstone.gemfire.cache.execute.RegionFunctionContext/
+            /cannot be cast to apache.geode.gemfire.cache.execute.RegionFunctionContext/
           );
           done();
         });
@@ -702,7 +702,7 @@ describe("gemfire.Cache", function() {
           function(next) {
             setTimeout(function() {
               region.get("key2", function(error, result) {
-                expect(error).not.toBeError();
+				expect(error).toEqual(undefined);
                 expect(result).toEqual("value2");
               });
               next();

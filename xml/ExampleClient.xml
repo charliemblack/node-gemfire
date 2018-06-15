@@ -39,4 +39,8 @@
   <region name="registerInterestTest" refid="CACHING_PROXY">
     <region-attributes pool-name="myPool"/>
   </region>
+
+  <region name="partitionRegion" refid="CACHING_PROXY">
+    <region-attributes pool-name="myPool"/>
+  </region>
 </client-cache>

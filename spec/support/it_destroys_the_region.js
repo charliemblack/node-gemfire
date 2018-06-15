@@ -20,7 +20,7 @@ module.exports = function itDestroysTheRegion(methodName) {
     region = cache.createRegion(regionName, {type: "LOCAL"});
     otherCopyOfRegion = cache.getRegion(regionName);
     }catch(ex){
-      console.log(ex)
+      console.log(ex);
     }
   });
 

@@ -35,7 +35,7 @@ std::string getClassName(const Local<Object> & v8Object) {
     std::string fullFieldName;
     fullFieldName.reserve((size * 2) + 3);  // escape every character, plus '[],'
 
-    for (unsigned int j = 0; j < size - 1; j++) {
+    for (unsigned int j = 0; j < size; j++) {
       char fieldNameChar = fieldName[j];
       switch (fieldNameChar) {
         case ',':

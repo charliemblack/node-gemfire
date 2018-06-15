@@ -23,4 +23,6 @@
   <region name="createRegionProxyTest" refid="REPLICATE"/>
 
   <region name="registerInterestTest" refid="REPLICATE"/>
+  
+  <region name="partitionRegion" refid="PARTITION"/>
 </cache>

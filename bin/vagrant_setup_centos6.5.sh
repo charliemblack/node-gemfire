@@ -67,6 +67,7 @@ if [ ! -e $NATIVE_CLIENT_DIRECTORY ]; then
   fi
   cd /opt/pivotal/gemfire
   tar zxvf /vagrant/tmp/$NATIVE_CLIENT_FILENAME
+  chmod +x ${GEMFIRE_DIRECTORY}/bin/*
 fi
 
 if [ ! -e /usr/bin/javac ]; then

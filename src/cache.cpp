@@ -143,10 +143,8 @@ NAN_METHOD(Cache::ExecuteQuery) {
   Local<Value> poolNameValue(Nan::Undefined());
   Local<Value> queryParams;
 
-  // .executeQuery(query, function)
   if (info[1]->IsFunction()) {
     callbackFunction = info[1].As<Function>();
-    // .executeQuery(query, optionsHash, function)
   } else if (argsLength > 2 && info[2]->IsFunction()) {
     callbackFunction = info[2].As<Function>();
 
@@ -154,7 +152,6 @@ NAN_METHOD(Cache::ExecuteQuery) {
       Local<Object> optionsObject = info[1]->ToObject();
       poolNameValue = optionsObject->Get(Nan::New("poolName").ToLocalChecked());
     }
-    // .executeQuery(query, paramsArray, optionsHash, function)
   } else if (argsLength > 3 && info[3]->IsFunction()) {
     callbackFunction = info[3].As<Function>();
 

@@ -711,7 +711,13 @@ describe("gemfire.Region", function() {
     });
 
     // Pending us figuring out how to cause an error in clear()
-    xit("emits an event when an error occurs and there is no callback", function(){});
+    //xit("emits an event when an error occurs and there is no callback", function(){});
+    it("throws an error when trying to clear a partitioned region", function(){
+      var region1 = cache.getRegion("partitionRegion");
+	  region1.clear(function(error) {
+        expect(error).toBeError("apache::geode::client::CacheServerException", /UnsupportedOperationException/);
+	  });
+	});
 
     it("does not emit an event when no error occurs and there is no callback", function(done) {
       // if an error event is emitted, the test suite will crash here

@@ -15,8 +15,6 @@ void GemfireWorker::Execute() {
     ExecuteGemfireWork();
   } catch(apache::geode::client::Exception & exception) {
     //TODO : need to figure out logging for debug level info.
-    //printf("GemFire worker name = %s\n\tmessage = %s\n", exception.getName(), exception.getMessage());
-    //exception.printStackTrace();
     SetError(exception.getName(), exception.getMessage());
   }
 }

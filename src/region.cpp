@@ -775,7 +775,6 @@ NAN_METHOD(Region::Query) {
   Region * region = Nan::ObjectWrap::Unwrap<Region>(info.Holder());
 
   std::string queryPredicate(*Nan::Utf8String(info[0]));
-  //printf("queryPredicate %s\n", queryPredicate.c_str());
   Nan::Callback * callback = new Nan::Callback(info[1].As<Function>());
 
   T * worker = new T(region->regionPtr, queryPredicate, callback);

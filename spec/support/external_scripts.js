@@ -1,18 +1,5 @@
 const childProcess = require('child_process');
 
-//jasmine.getEnv().addReporter({
-//  specStarted: function(result) {
-//      console.log(result.fullName);
-//  }
-//});
-//jasmine.getEnv().afterEach(function(){
-//  console.log("done with last test")
-//});
-//process.on("uncaughtException",function(e) {
-//  console.log("Caught unhandled exception: " + e);
-//  console.log(" ---> : " + e.stack);
-//});
-
 const errorMatchers = require("./error_matchers");
 
 function runExternalTest(name, callback) {
