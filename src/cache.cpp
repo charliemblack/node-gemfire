@@ -55,7 +55,17 @@ NAN_METHOD(Cache::New) {
     Nan::ThrowError("Cache constructor requires a path to an XML configuration file as its first argument.");
     return;
   }
-  CacheFactoryPtr cacheFactory(CacheFactory::createCacheFactory());
+  CacheFactoryPtr cacheFactory;
+
+  if(info.Length() >1){
+    // first param is the XML file and the second is the properties.
+    PropertiesPtr gemfireProperties = Properties::create();
+    gemfireProperties->load(*Nan::Utf8String(info[1]));
+    cacheFactory = CacheFactory::createCacheFactory(gemfireProperties);
+  } else {
+    cacheFactory = CacheFactory::createCacheFactory();
+  }
+
   cacheFactory->set("cache-xml-file", *Nan::Utf8String(info[0]));
   cacheFactory->setSubscriptionEnabled(true);
 
