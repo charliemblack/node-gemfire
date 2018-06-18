@@ -1,5 +1,9 @@
 #!/bin/sh
 
+echo ****************************
+echo ****** Installing GDB ******
+echo ****************************
+
 set -e
 
 sh -c "cat > ~/.gdbinit" <<'EOF'

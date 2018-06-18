@@ -1,5 +1,9 @@
 #!/bin/sh
 
+echo *****************************
+echo ****** Installing Ruby ******
+echo *****************************
+
 set -e
 
 if [ ! -e ~/.rbenv ]; then

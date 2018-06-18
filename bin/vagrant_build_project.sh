@@ -1,5 +1,9 @@
 #!/bin/sh
 
+echo *********************************************
+echo ****** Installing Node GemFire/Bundler ******
+echo *********************************************
+
 set -e
 
 cd /vagrant
@@ -10,6 +14,10 @@ bundle install
 
 # debug
 npm install -g node-inspect
+
+if [ ! -d "tmp/gemfire" ]; then
+  mkdir tmp/gemfire
+fi
 
 echo ""
 echo ""
