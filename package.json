@@ -64,7 +64,8 @@
   },
   "scripts": {
     "configure": "cd /vagrant;node node_modules/node-pre-gyp/bin/node-pre-gyp configure --debug",
-    "install": "cd vagrant;node node_modules/node-pre-gyp/bin/node-pre-gyp build --debug",
+    "install": "node-pre-gyp install --fallback-to-build",
+    "__commentout_install": "cd vagrant;node node_modules/node-pre-gyp/bin/node-pre-gyp build --debug",
     "test": "cd /vagrant;grunt test"
   },
   "devDependencies": {
