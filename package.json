@@ -62,9 +62,6 @@
     "path": "^0.12.7",
     "process": "^0.11.10"
   },
-  "bundledDependencies": [
-    "node-pre-gyp"
-  ],
   "scripts": {
     "install": "node-pre-gyp install --fallback-to-build",
     "test": "grunt test"
