@@ -50,7 +50,7 @@
   },
   "binary": {
     "module_name": "gemfire",
-    "module_path": "./build/Release/",
+    "module_path": "./lib/binding/{configuration}/{node_abi}-{platform}-{arch}/",
     "remote_path": "./node-{module_name}/{version}/",
     "host": "https://download.pivotal.com.s3.amazonaws.com"
   },
