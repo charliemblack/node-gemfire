@@ -47,10 +47,9 @@ describe("gemfire.Region", function() {
       expect(returnValue).toEqual(region);
     });
 
-    it("passes an error to the callback when called for a nonexistent key", function(done) {
+    it("returns a null for a nonexisitant key", function(done) {
       region.get("baz", function(error, value) {
-        expect(error).toBeError("KeyNotFoundError", "Key not found in region.");
-        expect(value).toBeUndefined();
+        expect(value).toBeNull();
         done();
       });
     });
@@ -93,11 +92,10 @@ describe("gemfire.Region", function() {
       expect(getWithoutKey).toThrow(new Error("You must pass a key to getSync()."));
     });
 
-    it("throws an error when called for a nonexistent key", function() {
-      function SynchronousGetInvalidKey() {
-        region.getSync("baz");
-      }
-      expect(SynchronousGetInvalidKey).toThrow(new Error("Key not found in region."));
+    it("test for get for a nonexistent key", function() {
+      
+      var value = region.getSync("baz");
+      expect(value).toBeNull();
     });
 
     it("executes synchronously", function(done) {
@@ -670,8 +668,8 @@ describe("gemfire.Region", function() {
         function(next) { region.put('key', 'value', next); },
         function(next) { region.clear(next); },
         function(next) {
-          region.get('key', function(error) {
-            expect(error).toBeError();
+          region.get('key', function(error, value) {
+            expect(value).toBeNull();
             next();
           });
         }
@@ -693,8 +691,8 @@ describe("gemfire.Region", function() {
         function(next) { region2.put('key', 'value', next); },
         function(next) { region1.clear(next); },
         function(next) {
-          region1.get("key", function(error) {
-            expect(error).toBeError();
+          region1.get("key", function(error, value) {
+            expect(value).toBeNull();
             next();
           });
         },
@@ -719,7 +717,7 @@ describe("gemfire.Region", function() {
 	  });
 	});
 
-    it("does not emit an event when no error occurs and there is no callback", function(done) {
+    it("does not emit an event when no error occurs and there is no callback 1", function(done) {
       // if an error event is emitted, the test suite will crash here
       region.put("foo", "bar", function(error) {
         expect(error).not.toBeError();
@@ -728,7 +726,7 @@ describe("gemfire.Region", function() {
 
         until(
           function(test) { region.get("foo", test); },
-          function(error) { return error && error.message === "Key not found in region."; },
+          function(error, result) { return result === null },
           done
         );
       });
@@ -924,8 +922,8 @@ describe("gemfire.Region", function() {
         expect(error).not.toBeError();
         region.remove("foo", function(error) {
           expect(error).not.toBeError();
-          region.get("foo", function(error) {
-            expect(error).toBeError();
+          region.get("foo", function(error, value) {
+            expect(value).toBe(null);
             done();
           });
         });
@@ -1001,13 +999,13 @@ describe("gemfire.Region", function() {
       });
     });
 
-    it("does not emit an event when no error occurs and there is no callback", function(done) {
+    it("does not emit an event when no error occurs and there is no callback 2", function(done) {
       region.put("foo", "bar", function(error) {
         region.remove("foo");
 
         until(
           function(test) { region.get("foo", test); },
-          function(error, result) { return error && error.message === "Key not found in region."; },
+          function(error, result) { return result === null },
           done
         );
       });
@@ -1311,7 +1309,7 @@ describe("gemfire.Region", function() {
       });
     });
 
-    it("does not emit an event when no error occurs and there is no callback", function(done) {
+    it("does not emit an event when no error occurs and there is no callback 3", function(done) {
       // if it fails, an uncaught event will blow up the suite
       region.putAll({ foo: "bar" });
 

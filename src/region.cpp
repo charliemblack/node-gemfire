@@ -243,9 +243,12 @@ class GetWorker : public GemfireWorker {
 
     valuePtr = regionPtr->get(keyPtr);
 
+    //TODO switching up behavior no error for key not found
+    /*
     if (valuePtr == NULLPTR) {
       SetError("KeyNotFoundError", "Key not found in region.");
     }
+    */
   }
 
   void HandleOKCallback() {
@@ -311,10 +314,12 @@ NAN_METHOD(Region::GetSync) {
 
   CacheableKeyPtr keyPtr(gemfireKey(info[0], cachePtr));
   CacheablePtr valuePtr = regionPtr->get(keyPtr);
-
+  //TODO switching up behavior - don't throw error on key not found
+  /*
   if (valuePtr == NULLPTR) {
     Nan::ThrowError("Key not found in region.");
   }
+  */
 
   info.GetReturnValue().Set(v8Value(valuePtr));
 }

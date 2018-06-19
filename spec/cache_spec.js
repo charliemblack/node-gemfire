@@ -694,15 +694,13 @@ describe("gemfire.Cache", function() {
           },
           function(next) {
             region.get("key2", function(error, result) {
-              expect(result).toEqual(undefined);
-              expect(error.name).toEqual("KeyNotFoundError");
+              expect(result).toEqual(null);
             });
             next();
           },
           function(next) {
             setTimeout(function() {
               region.get("key2", function(error, result) {
-				expect(error).toEqual(undefined);
                 expect(result).toEqual("value2");
               });
               next();
