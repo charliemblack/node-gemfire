@@ -14,6 +14,7 @@ LIBEXP AuthInitialize* createUserPasswordAuthInitInstance() {
 }
 
 PropertiesPtr UserPasswordAuthInit::getCredentials(PropertiesPtr& securityprops, const char* server) {
+  printf("UserPasswordAuthInit::getCredentials\n");
   CacheablePtr userName;
   if (securityprops == NULLPTR || (userName = securityprops->find(SECURITY_USERNAME)) == NULLPTR) {
     throw AuthenticationFailedException("UserPasswordAuthInit: user name " "property [" SECURITY_USERNAME "] not set.");
@@ -21,6 +22,8 @@ PropertiesPtr UserPasswordAuthInit::getCredentials(PropertiesPtr& securityprops,
   PropertiesPtr credentials = Properties::create();
   credentials->insert(SECURITY_USERNAME, userName->toString()->asChar());
   CacheablePtr passwd = securityprops->find(SECURITY_PASSWORD);
+  printf("user name = %s\n", userName->toString()->asChar());
+  printf("password = %s\n", passwd->toString()->asChar());
   if (passwd == NULLPTR) {
     passwd = CacheableString::create("");
   }
