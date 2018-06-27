@@ -19,8 +19,12 @@ fi
 export PATH="~/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
-VERSION=`cat ~/.rbenv/version`
-if [ "$VERSION" != "2.4.2" ]; then
+RUBY=
+if [ -f ~/.rbenv/version ]; then
+  RUBY=`cat ~/.rbenv/version`
+fi	
+	
+if [ "$RUBY" != "2.4.2" ]; then
   echo "*****************************"
   echo "****** Installing Ruby ******"
   echo "*****************************"

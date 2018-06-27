@@ -6,12 +6,15 @@ echo "****************************************************"
 
 set -e
 
-VERSION=`cat ~/.gdbinit | grep gppfs-0.2 | wc -l`
+GDB=
+if [ -f ~/.gdbinit ]; then
+  GDB=`cat ~/.gdbinit | grep gppfs-0.2 | wc -l`
+fi
 
-if [ "$VERSION" != "1" ]; then
-  echo "*********************************************"
-  echo "****** GDB pretty printers for STLport ******"
-  echo "*********************************************"
+if [ "$GDB" != "1" ]; then
+  echo "****************************************************"
+  echo "****** GDB pretty printer support for STLport ******"
+  echo "****************************************************"
   sh -c "cat > ~/.gdbinit" <<'EOF'
 python
 import sys

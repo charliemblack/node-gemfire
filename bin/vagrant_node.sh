@@ -7,36 +7,29 @@ echo "***********************************************************"
 echo "****** Validating NVM/NPM/Grunt/Jasmine installation ******"
 echo "***********************************************************"
 
-VERSION=`nvm list 8 | grep v8.11.3 | wc -l`
-if [ "$VERSION" != "1" ]; then
+NVM=`nvm list 8 | grep v8.11.3 | wc -l`
+if [ "$NVM" != "1" ]; then
   echo "****************************"
   echo "****** Installing NVM ******"
   echo "****************************"
   nvm install -s 8 
 fi 
 
-VERSION=`npm version | grep "npm: '6.1.0'" | wc -l`
-if [ "$VERSION" != "1" ]; then
-  echo "****************************"
-  echo "****** Installing NPM ******"
-  echo "****************************"
-  npm install -g npm@6
-fi 
-
-VERSION=`which grunt | grep grunt | wc -l`
-if [ "$VERSION" != "1" ]; then
-  echo "******************************"
-  echo "****** Installing Grunt ******"
-  echo "******************************"
-  nvm exec 8 npm install -g grunt
+GRUNT=`nvm exec which grunt | grep grunt | wc -l`
+if [ "$GRUNT" != "1" ]; then
+  echo "******************************************"
+  echo "****** Installing Grunt and Jasmine ******"
+  echo "******************************************"
+  nvm exec 8 npm install -g grunt jasmine
 fi
 
-VERSION=`which jasmine | grep jasmine | wc -l`
-if [ "$VERSION" != "1" ]; then
-  echo "********************************"
-  echo "****** Installing Jasmine ******"
-  echo "********************************"
-  nvm exec 8 npm install -g jasmine
+# For script debugging
+NODE_INSPECT=`npm search node-inspect | grep "Node Inspect" | wc -l`
+if [ "$NODE_INSPECT" != "1" ]; then
+  echo "*************************************"
+  echo "****** Installing node-inspect ******"
+  echo "*************************************"
+  npm install -g node-inspect
 fi
 
 #nvm list 8 || nvm install -s 8 || npm install -g npm@6

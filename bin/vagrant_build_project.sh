@@ -8,15 +8,19 @@ echo "*********************************************************"
 
 cd /vagrant
 
+if [ ! -d "tmp/gemfire" ]; then
+  mkdir tmp/gemfire
+fi
+
 if [ ! -d "lib/binding/Release/node-v57-linux-x64" ]; then
   echo "*************************************"
   echo "****** Installing Node GemFire ******"
   echo "*************************************"
-  npm install
+  npm install-test
 fi
 
-VERSION=`gem list | grep "bundler (1.16.2)" | wc -l`
-if [ "$VERSION" != "1" ]; then 
+BUNDLER=`gem list | grep "bundler (1.16.2)" | wc -l`
+if [ "$BUNDLER" != "1" ]; then 
   echo "********************************"
   echo "****** Installing Bundler ******"
   echo "********************************"
@@ -25,26 +29,21 @@ fi
   
 rbenv rehash
 
-VERSION=`bundle check | grep "dependencies are satisfied" | wc -l`
-if [ "$VERSION" != "1" ]; then
+BUNDLE=`bundle check | grep "dependencies are satisfied" | wc -l`
+if [ "$BUNDLE" != "1" ]; then
   echo "*******************************"
   echo "****** Installing bundle ******"
   echo "*******************************"
   bundle install
 fi
 
-# For script debugging
-VERSION=`npm search node-inspect | grep "Node Inspect" | wc -l`
-if [ "$VERSION" != "1" ]; then
-  echo "*************************************"
-  echo "****** Installing node-inspect ******"
-  echo "*************************************"
-  npm install -g node-inspect
-fi
-
-if [ ! -d "tmp/gemfire" ]; then
-  mkdir tmp/gemfire
-fi
+NPM=`npm version | grep "npm: '6.1.0'" | wc -l`
+if [ "$NPM" != "1" ]; then
+  echo "****************************"
+  echo "****** Installing NPM ******"
+  echo "****************************"
+  npm install -g npm@6
+fi 
 
 echo ""
 echo ""

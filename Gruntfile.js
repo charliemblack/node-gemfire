@@ -115,7 +115,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', ['shell:buildDebug']);
   grunt.registerTask('rebuild', ['shell:rebuildDebug']);
-  grunt.registerTask('test', ['rebuild', 'shell:cppUnitTests', 'server:ensure', 'server:deploy', 'shell:jasmine']);
+  grunt.registerTask('test', ['build', 'shell:cppUnitTests', 'server:ensure', 'server:deploy', 'shell:jasmine']);
   grunt.registerTask('lint', ['shell:lint', 'jshint']);
   grunt.registerTask('console', ['build', 'shell:console']);
   grunt.registerTask('license_finder', ['shell:licenseFinder']);
