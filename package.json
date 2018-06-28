@@ -6,6 +6,7 @@
   "files": [
     "lib/**/*.js",
     "src",
+	"spec/**/*.cpp",
     "binding.gyp"
   ],
   "author": "Pivotal Software, Inc.",

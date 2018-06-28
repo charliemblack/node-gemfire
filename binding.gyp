@@ -50,7 +50,7 @@
     {
        "target_name": "test",
        "libraries": [ "-lgtest" ],
-        "sources": [ "spec/cpp/test.cpp", ],
+       "sources": [ "spec/cpp/test.cpp" ]
     },
     {
       "target_name": "action_after_build",
