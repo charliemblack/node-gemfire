@@ -1,10 +1,10 @@
 #include <geode/GeodeCppCache.hpp>
 #ifdef __linux__
 #include <execinfo.h>
+#include <unistd.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include "gemfire_worker.hpp"
 #include "exceptions.hpp"
 
