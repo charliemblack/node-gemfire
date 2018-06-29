@@ -32,8 +32,8 @@ inline Nan::Callback * getCallback(const Local<Value> & value) {
 v8::Local<v8::Object> Region::NewInstance(RegionPtr regionPtr) {
   Nan::EscapableHandleScope scope;
   const unsigned int argc = 0;
-  Local<Value> argv[argc] = {};
-  Local<Object> instance(Nan::New(Region::constructor())->NewInstance(argc, argv));
+  //Local<Value> argv[argc] = {};
+  Local<Object> instance(Nan::New(Region::constructor())->NewInstance(argc, NULL));
   Region *region = new Region(regionPtr);
   RegionEventRegistry::getInstance()->add(region);
   region->Wrap(instance);
