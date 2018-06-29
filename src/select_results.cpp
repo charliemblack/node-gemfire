@@ -27,16 +27,10 @@ NAN_MODULE_INIT(SelectResults::Init){
 
 Local<Object> SelectResults::NewInstance(const SelectResultsPtr & selectResultsPtr) {
   Nan::EscapableHandleScope scope;
- const unsigned int argc = 0;
-  #ifdef __linux__
+  const unsigned int argc = 0;
   #Local<Value> argv[argc] = {};
-  #endif
-
-  #ifdef __linux__
-  #Local<Object> instance(Nan::New(SelectResults::constructor())->NewInstance(argc, argv));
-  #else
-  #Local<Object> instance(Nan::New(SelectResults::constructor())->NewInstance(argc, NULL));
-  #endif
+ 
+  Local<Object> instance(Nan::New(SelectResults::constructor())->NewInstance(argc, NULL));
   SelectResults * selectResults = new SelectResults(selectResultsPtr);
   selectResults->Wrap(instance);
 
