@@ -30,10 +30,13 @@ Local<Object> SelectResults::NewInstance(const SelectResultsPtr & selectResultsP
  const unsigned int argc = 0;
   #ifdef __linux__
   #Local<Value> argv[argc] = {};
-  #else
-  ##Local<Value> argv[argc] = NULL;
   #endif
-  Local<Object> instance(Nan::New(SelectResults::constructor())->NewInstance(argc, argv));
+
+  #ifdef __linux__
+  #Local<Object> instance(Nan::New(SelectResults::constructor())->NewInstance(argc, argv));
+  #else
+  #Local<Object> instance(Nan::New(SelectResults::constructor())->NewInstance(argc, NULL));
+  #endif
   SelectResults * selectResults = new SelectResults(selectResultsPtr);
   selectResults->Wrap(instance);
 
