@@ -22,7 +22,7 @@ std::string getClassName(const Local<Object> & v8Object) {
    Nan::HandleScope scope;
 
   std::set<std::string> fieldNames;
-  uint totalSize = 0;
+  unsigned int totalSize = 0;
 
   Local<Array> v8Keys(v8Object->GetOwnPropertyNames());
   unsigned int numKeys = v8Keys->Length();
