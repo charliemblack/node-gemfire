@@ -20,8 +20,8 @@
       "_REENTRANT"
     ],
     "libraries": [ 
-      "-lpivotal-gemfire", 
-      "-L$(GFCPP)/lib"
+      "-l$(GFCPP)/lib/pivotal-gemfire.lib" 
+      # "-L$(GFCPP)/lib"
     ],
     "sources": [
       "src/dependencies.cpp",
