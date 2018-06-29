@@ -6,7 +6,7 @@
   "target_defaults": {
     "include_dirs" : [
       "$(GFCPP)/include",
-      " C:\\HashiCorp\\Vagrant\\embedded\\mingw64\\x86_64-w64-mingw32\\include",
+      "C:\\HashiCorp\\Vagrant\\embedded\\mingw64\\x86_64-w64-mingw32\\include",
       "<!(node -e \"require('nan')\")" 
     ],
     'cflags_cc!': [
