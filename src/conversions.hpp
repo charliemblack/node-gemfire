@@ -7,7 +7,9 @@
 #include <geode/CacheFactory.hpp>
 #include <string>
 #include <cstdint>
+#ifdef __linux__
 #include <sys/time.h>
+#endif
 
 namespace node_gemfire {
 
