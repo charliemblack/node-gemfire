@@ -6,8 +6,8 @@
   "target_defaults": {
     "include_dirs" : [
       "$(GFCPP)/include",
-      "C:\windows-c-compiler-packages\mingw\include",
-      "<!(node -e \"require('nan')\")"
+      "<!(node -e \"require('nan')\")",
+      "C:\windows-c-compiler-packages\mingw\include"      
     ],
     'cflags_cc!': [
       '-fno-rtti', 
