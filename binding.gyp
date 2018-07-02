@@ -38,6 +38,7 @@
       "src/region_event_registry.cpp",
       "src/event_stream.cpp",
       "src/region_shortcuts.cpp",
+      "src/cache_factory.cpp",
     ]
   },
   "targets": [

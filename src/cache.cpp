@@ -30,7 +30,7 @@ static void closeCacheAtExit(void * arg){
 NAN_MODULE_INIT(Cache::Init) {
   Nan::HandleScope scope;
 
-  v8::Local<v8::FunctionTemplate> constructorTemplate = Nan::New<v8::FunctionTemplate>(New);
+  Local<FunctionTemplate> constructorTemplate = Nan::New<FunctionTemplate>();
   constructorTemplate->SetClassName(Nan::New("Cache").ToLocalChecked());
   
   constructorTemplate->InstanceTemplate()->SetInternalFieldCount(1);
@@ -48,49 +48,16 @@ NAN_MODULE_INIT(Cache::Init) {
   Nan::Set(target, Nan::New("Cache").ToLocalChecked(), Nan::GetFunction(constructorTemplate).ToLocalChecked());
 }
 
-NAN_METHOD(Cache::New) {
-  Nan::HandleScope scope;
+v8::Local<v8::Object> Cache::NewInstance(CachePtr cachePtr) {
 
-  if (info.Length() < 1) {
-    Nan::ThrowError("Cache constructor requires a path to an XML configuration file as its first argument.");
-    return;
-  }
-  CacheFactoryPtr cacheFactory;
-
-  if(info.Length() >1){
-    // first param is the XML file and the second is the properties.
-    PropertiesPtr gemfireProperties = Properties::create();
-    gemfireProperties->load(*Nan::Utf8String(info[1]));
-    cacheFactory = CacheFactory::createCacheFactory(gemfireProperties);
-  } else {
-    cacheFactory = CacheFactory::createCacheFactory();
-  }
-
-  cacheFactory->set("cache-xml-file", *Nan::Utf8String(info[0]));
-  cacheFactory->setSubscriptionEnabled(true);
-
-  CachePtr cachePtr;
-  try {
-    cachePtr = cacheFactory->create();
-  } catch(const apache::geode::client::Exception & exception) {
-    ThrowGemfireException(exception);
-    return;
-  }
-
-  if (!cachePtr->getPdxReadSerialized()) {
-    cachePtr->close();
-    Nan::ThrowError("<pdx read-serialized='true' /> must be set in your cache xml");
-    return;
-  }
-
-  Cache * cache = new Cache(cachePtr);
-  cache->Wrap(info.This());
-
-  // Just thinking do we really have to close the cache - maybe to flush some bits to disk???? cmb
-  closeThisCache = cachePtr;
-  node::AtExit(closeCacheAtExit);
-  
-  info.GetReturnValue().Set(info.This());
+  Nan::EscapableHandleScope scope;
+  const unsigned int argc = 0;
+  Local<Value> argv[argc] = {};
+  Local<v8::Function> cons = Nan::New(Cache::constructor());
+  Local<Object> instance = Nan::NewInstance(cons, argc, argv).ToLocalChecked();
+  Cache *cache = new Cache(cachePtr);
+  cache->Wrap(instance);
+  return scope.Escape(instance);
 }
 
 NAN_METHOD(Cache::Close) {
@@ -278,7 +245,6 @@ NAN_METHOD(Cache::CreateRegion) {
     ThrowGemfireException(exception);
     return;
   }
-
   info.GetReturnValue().Set(Region::NewInstance(regionPtr));
 }
 

@@ -14,7 +14,8 @@ class Cache : public Nan::ObjectWrap {
   static void Init(v8::Local<v8::Object> exports);
 
   apache::geode::client::CachePtr cachePtr;
-
+  static v8::Local<v8::Object> NewInstance(apache::geode::client::CachePtr);
+ 
  protected:
   explicit Cache(
       apache::geode::client::CachePtr cachePtr) :
@@ -25,8 +26,7 @@ class Cache : public Nan::ObjectWrap {
   }
 
   void close();
-
-  static NAN_METHOD(New);
+  
   static NAN_METHOD(Close);
   static NAN_METHOD(ExecuteFunction);
   static NAN_METHOD(ExecuteQuery);

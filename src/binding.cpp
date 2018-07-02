@@ -6,6 +6,7 @@
 #include "dependencies.hpp"
 #include "cache.hpp"
 #include "region.hpp"
+#include "cache_factory.hpp"
 #include "select_results.hpp"
 
 using namespace v8;
@@ -39,6 +40,7 @@ NAN_METHOD(Initialize) {
   node_gemfire::Cache::Init(gemfire);
   node_gemfire::Region::Init(gemfire);
   node_gemfire::SelectResults::Init(gemfire);
+  node_gemfire::CacheFactory::Init(gemfire);
 
   dependencies.Reset(v8::Isolate::GetCurrent(),info[0]->ToObject());
 
