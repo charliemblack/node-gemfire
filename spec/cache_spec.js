@@ -40,7 +40,9 @@ describe("gemfire.Cache", function() {
       expectExternalFailure("missing_xml_file", done, expectedMessage);
     });
 
-    it("throws an error if setReadSerialized not set to true in the XML", function(done) {
+    // The code forces PDX so this is an invalid test.
+    //TODO delete this test.
+    xit("throws an error if setReadSerialized not set to true in the XML", function(done) {
       var expectedMessage = "must be set in your cache xml";
       expectExternalFailure("not_pdx_read_serialized", done, expectedMessage);
     });

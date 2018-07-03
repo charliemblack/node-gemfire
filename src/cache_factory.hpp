@@ -32,10 +32,20 @@ class CacheFactory : public Nan::ObjectWrap {
   static NAN_METHOD(SetLoadConditioningInterval);
   static NAN_METHOD(SetMaxConnections);
   static NAN_METHOD(SetMinConnections);
+  static NAN_METHOD(SetPdxIgnoreUnreadFields);
   static NAN_METHOD(SetPingInterval);
   static NAN_METHOD(SetPRSingleHopEnabled);
   static NAN_METHOD(SetReadTimeout);
   static NAN_METHOD(SetRetryAttempts);
+  static NAN_METHOD(SetServerGroup);
+  static NAN_METHOD(SetSocketBufferSize);
+  static NAN_METHOD(SetStatisticInterval);
+  static NAN_METHOD(SetSubscriptionAckInterval);
+  static NAN_METHOD(SetSubscriptionEnabled);
+  static NAN_METHOD(SetSubscriptionMessageTrackingTimeout);
+  static NAN_METHOD(SetSubscriptionRedundancy);
+  static NAN_METHOD(SetThreadLocalConnections);
+  static NAN_METHOD(SetUpdateLocatorListInterval);
 
   
   Nan::Callback * callback;

@@ -37,10 +37,20 @@ NAN_MODULE_INIT(CacheFactory::Init) {
   Nan::SetPrototypeMethod(constructorTemplate, "setLoadConditioningInterval", CacheFactory::SetLoadConditioningInterval);
   Nan::SetPrototypeMethod(constructorTemplate, "setMaxConnections", CacheFactory::SetMaxConnections);
   Nan::SetPrototypeMethod(constructorTemplate, "setMinConnections", CacheFactory::SetMinConnections);
+  Nan::SetPrototypeMethod(constructorTemplate, "setPdxIgnoreUnreadFields", CacheFactory::SetPdxIgnoreUnreadFields);
   Nan::SetPrototypeMethod(constructorTemplate, "setPingInterval", CacheFactory::SetPingInterval);
   Nan::SetPrototypeMethod(constructorTemplate, "setPRSingleHopEnabled", CacheFactory::SetPRSingleHopEnabled);
   Nan::SetPrototypeMethod(constructorTemplate, "setReadTimeout", CacheFactory::SetReadTimeout);
   Nan::SetPrototypeMethod(constructorTemplate, "setRetryAttempts", CacheFactory::SetRetryAttempts);
+  Nan::SetPrototypeMethod(constructorTemplate, "setServerGroup", CacheFactory::SetServerGroup);
+  Nan::SetPrototypeMethod(constructorTemplate, "setSocketBufferSize", CacheFactory::SetSocketBufferSize);
+  Nan::SetPrototypeMethod(constructorTemplate, "setStatisticInterval", CacheFactory::SetStatisticInterval);
+  Nan::SetPrototypeMethod(constructorTemplate, "setSubscriptionAckInterval", CacheFactory::SetSubscriptionAckInterval);
+  Nan::SetPrototypeMethod(constructorTemplate, "setSubscriptionEnabled", CacheFactory::SetSubscriptionEnabled);
+  Nan::SetPrototypeMethod(constructorTemplate, "setSubscriptionMessageTrackingTimeout", CacheFactory::SetSubscriptionMessageTrackingTimeout);
+  Nan::SetPrototypeMethod(constructorTemplate, "setSubscriptionRedundancy", CacheFactory::SetSubscriptionRedundancy);
+  Nan::SetPrototypeMethod(constructorTemplate, "setThreadLocalConnections", CacheFactory::SetThreadLocalConnections);
+  Nan::SetPrototypeMethod(constructorTemplate, "setUpdateLocatorListInterval", CacheFactory::SetUpdateLocatorListInterval);
 
   constructor().Reset(Nan::GetFunction(constructorTemplate).ToLocalChecked());
 
@@ -80,7 +90,6 @@ NAN_METHOD(CacheFactory::AddLocator) {
   cacheFactory->cacheFactoryPtr->addLocator(*Nan::Utf8String(info[0]), Nan::To<int>(info[1]).FromJust());
   info.GetReturnValue().Set(info.This());
 }
-
 NAN_METHOD(CacheFactory::AddServer) {
   Nan::HandleScope scope;
   int argsLength = info.Length();
@@ -164,6 +173,17 @@ NAN_METHOD(CacheFactory::SetMinConnections) {
   cacheFactory->cacheFactoryPtr->setMinConnections(Nan::To<int>(info[1]).FromJust());
   info.GetReturnValue().Set(info.This());
 }
+NAN_METHOD(CacheFactory::SetPdxIgnoreUnreadFields) {
+  Nan::HandleScope scope;
+  int argsLength = info.Length();
+  if(argsLength != 1 && info[0]->IsBoolean()){
+    Nan::ThrowError("You must pass an bool value.");
+    return;
+  }
+  CacheFactory * cacheFactory = Nan::ObjectWrap::Unwrap<CacheFactory>(info.This());
+  cacheFactory->cacheFactoryPtr->setPdxIgnoreUnreadFields(Nan::To<bool>(info[1]).FromJust());
+  info.GetReturnValue().Set(info.This());
+}
 NAN_METHOD(CacheFactory::SetPingInterval) {
   Nan::HandleScope scope;
   int argsLength = info.Length();
@@ -206,6 +226,105 @@ NAN_METHOD(CacheFactory::SetRetryAttempts) {
   }
   CacheFactory * cacheFactory = Nan::ObjectWrap::Unwrap<CacheFactory>(info.This());
   cacheFactory->cacheFactoryPtr->setRetryAttempts(Nan::To<int>(info[1]).FromJust());
+  info.GetReturnValue().Set(info.This());
+}
+NAN_METHOD(CacheFactory::SetServerGroup) {
+  Nan::HandleScope scope;
+  int argsLength = info.Length();
+  if(argsLength != 1 && info[0]->IsString()){
+    Nan::ThrowError("You must pass the server group name as a string.");
+    return;
+  }
+  CacheFactory * cacheFactory = Nan::ObjectWrap::Unwrap<CacheFactory>(info.This());
+  cacheFactory->cacheFactoryPtr->setServerGroup(*Nan::Utf8String(info[0]));
+  info.GetReturnValue().Set(info.This());
+}
+NAN_METHOD(CacheFactory::SetSocketBufferSize) {
+  Nan::HandleScope scope;
+  int argsLength = info.Length();
+  if(argsLength != 1 && info[0]->IsNumber()){
+    Nan::ThrowError("You must pass an integer value.");
+    return;
+  }
+  CacheFactory * cacheFactory = Nan::ObjectWrap::Unwrap<CacheFactory>(info.This());
+  cacheFactory->cacheFactoryPtr->setSocketBufferSize(Nan::To<int>(info[1]).FromJust());
+  info.GetReturnValue().Set(info.This());
+}
+NAN_METHOD(CacheFactory::SetStatisticInterval) {
+  Nan::HandleScope scope;
+  int argsLength = info.Length();
+  if(argsLength != 1 && info[0]->IsNumber()){
+    Nan::ThrowError("You must pass an integer value.");
+    return;
+  }
+  CacheFactory * cacheFactory = Nan::ObjectWrap::Unwrap<CacheFactory>(info.This());
+  cacheFactory->cacheFactoryPtr->setStatisticInterval(Nan::To<int>(info[1]).FromJust());
+  info.GetReturnValue().Set(info.This());
+}
+NAN_METHOD(CacheFactory::SetSubscriptionAckInterval) {
+  Nan::HandleScope scope;
+  int argsLength = info.Length();
+  if(argsLength != 1 && info[0]->IsNumber()){
+    Nan::ThrowError("You must pass an integer value.");
+    return;
+  }
+  CacheFactory * cacheFactory = Nan::ObjectWrap::Unwrap<CacheFactory>(info.This());
+  cacheFactory->cacheFactoryPtr->setSubscriptionAckInterval(Nan::To<int>(info[1]).FromJust());
+  info.GetReturnValue().Set(info.This());
+}
+NAN_METHOD(CacheFactory::SetSubscriptionEnabled) {
+  Nan::HandleScope scope;
+  int argsLength = info.Length();
+  if(argsLength != 1 && info[0]->IsBoolean()){
+    Nan::ThrowError("You must pass an bool value.");
+    return;
+  }
+  CacheFactory * cacheFactory = Nan::ObjectWrap::Unwrap<CacheFactory>(info.This());
+  cacheFactory->cacheFactoryPtr->setSubscriptionEnabled(Nan::To<bool>(info[1]).FromJust());
+  info.GetReturnValue().Set(info.This());
+}
+NAN_METHOD(CacheFactory::SetSubscriptionMessageTrackingTimeout) {
+  Nan::HandleScope scope;
+  int argsLength = info.Length();
+  if(argsLength != 1 && info[0]->IsNumber()){
+    Nan::ThrowError("You must pass an integer value.");
+    return;
+  }
+  CacheFactory * cacheFactory = Nan::ObjectWrap::Unwrap<CacheFactory>(info.This());
+  cacheFactory->cacheFactoryPtr->setSubscriptionMessageTrackingTimeout(Nan::To<int>(info[1]).FromJust());
+  info.GetReturnValue().Set(info.This());
+}
+NAN_METHOD(CacheFactory::SetSubscriptionRedundancy) {
+  Nan::HandleScope scope;
+  int argsLength = info.Length();
+  if(argsLength != 1 && info[0]->IsNumber()){
+    Nan::ThrowError("You must pass an integer value.");
+    return;
+  }
+  CacheFactory * cacheFactory = Nan::ObjectWrap::Unwrap<CacheFactory>(info.This());
+  cacheFactory->cacheFactoryPtr->setSubscriptionRedundancy(Nan::To<int>(info[1]).FromJust());
+  info.GetReturnValue().Set(info.This());
+}
+NAN_METHOD(CacheFactory::SetThreadLocalConnections) {
+  Nan::HandleScope scope;
+  int argsLength = info.Length();
+  if(argsLength != 1 && info[0]->IsBoolean()){
+    Nan::ThrowError("You must pass an bool value.");
+    return;
+  }
+  CacheFactory * cacheFactory = Nan::ObjectWrap::Unwrap<CacheFactory>(info.This());
+  cacheFactory->cacheFactoryPtr->setThreadLocalConnections(Nan::To<bool>(info[1]).FromJust());
+  info.GetReturnValue().Set(info.This());
+}
+NAN_METHOD(CacheFactory::SetUpdateLocatorListInterval) {
+  Nan::HandleScope scope;
+  int argsLength = info.Length();
+  if(argsLength != 1 && info[0]->IsNumber()){
+    Nan::ThrowError("You must pass an long value.");
+    return;
+  }
+  CacheFactory * cacheFactory = Nan::ObjectWrap::Unwrap<CacheFactory>(info.This());
+  cacheFactory->cacheFactoryPtr->setUpdateLocatorListInterval(Nan::To<long>(info[1]).FromJust());
   info.GetReturnValue().Set(info.This());
 }
 NAN_METHOD(CacheFactory::Create) {

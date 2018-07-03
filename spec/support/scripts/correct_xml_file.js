@@ -1,5 +1,5 @@
 const gemfire = require("../gemfire.js");
-gemfire.configure("xml/ExampleClient.xml", "./gfcpp.properties");
+gemfire.configure("xml/ExampleClient.xml");
 const cache = gemfire.getCache();
 
 if(!cache.getRegion('exampleRegion')) {
